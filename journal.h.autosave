@@ -1,0 +1,17 @@
+#ifndef JOURNAL_H
+#define JOURNAL_H
+#include "journalrecord.h"
+#include <vector>
+
+
+class JournalContainer
+{
+public:
+    JournalContainer();
+    JournalContainer(int numberOfElements);
+    ~JournalContainer();
+private:
+    std::vector<JournalRecord> records;
+};
+
+#endif // JOURNAL_H

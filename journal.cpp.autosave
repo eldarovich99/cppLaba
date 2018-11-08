@@ -1,0 +1,11 @@
+#include "journal.h"
+#include "journalrecord.h"
+
+Journal::Journal()
+{
+    
+}
+Journal::Journal(int numberOfElements)
+{
+
+}
