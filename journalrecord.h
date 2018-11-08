@@ -27,6 +27,7 @@ public:
     void setConsumerPosition(string _position);
     void setConsumerAcademicDegree(string _academicDegree);
     void setImpactOnAmountOfCoffee(double _impactOnAmountOfCoffee);
+    virtual double getCurrentAmountOfCoffee();
 private:
     struct userInfo{
     public:
@@ -36,10 +37,11 @@ private:
         string _position;
         string _academicDegree;
         };
-    tm _accessTime;
     userInfo user;
     double _impactOnAmountOfCoffee;
 protected:
+    tm _accessTime;
     tm getDefaultTime();
 };
 #endif // JOURNALRECORD_H
+

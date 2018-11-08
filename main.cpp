@@ -120,7 +120,7 @@ int main()
     // Part 2
 //изменить проверку на объем кофе,добавить сравнение элементов; изменить метод для получения объектов из файлов(воид вместо журнала); зменить сиауты на ассерты в контейнере;
 
-
+/*
     JournalContainer container = JournalContainer(); // tests for default constructor
     container.insert(someConsumer);
     container.insert(anotherConsumer);
@@ -153,7 +153,7 @@ int main()
     displayData(anotherContainer);
 
     container.clear();      // check clear function
-    assert(container.size()==0);
+    assert(container.size()==0);*/
     return 0;
 }
 

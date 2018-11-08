@@ -1,8 +1,10 @@
 #ifndef JOURNAL_H
 #define JOURNAL_H
 #include "journalrecord.h"
+#include "dutyrecord.h"
 #include <vector>
 #include <string>
+//#include <fstream>
 
 class JournalContainer
 {
@@ -11,10 +13,10 @@ public:
     JournalContainer(int numberOfElements, int maxVolume, int currentVolume);
     ~JournalContainer();
     JournalContainer(const JournalContainer &journal);
-    void insert(JournalRecord &record, int position);
-    void insert(JournalRecord &record);
+    void insert(DutyRecord &record, int position);
+    void insert(DutyRecord &record);
     void deleteRecord(int position);
-    JournalRecord get(int index) const;
+    DutyRecord get(int index) const;
     void clear();
     int size() const;
     void trim();
@@ -22,12 +24,14 @@ public:
     void readFromFile(std::string);
     bool compare(JournalContainer container) const;
 private:
-    JournalRecord *records;
+    DutyRecord *records;
     int sizeOfContainer;
     int currentSize;
     void changeSizeOfContainer(int newSize);
     int currentVolumeOfBulb;
     int maxVolume;
+    //inline void printTime(ofstream stream) const;
+    //inline void getTime(ofstream stream) const;
 };
 
 #endif // JOURNAL_H

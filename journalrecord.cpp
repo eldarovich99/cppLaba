@@ -109,6 +109,10 @@ JournalRecord::JournalRecord()
          _impactOnAmountOfCoffee = impactOnAmountOfCoffee;
     }
 
+    double JournalRecord::getCurrentAmountOfCoffee(){
+        return -1;
+    }
+
     tm JournalRecord::getDefaultTime(){
         std::time_t t = std::time(nullptr);   // get time now
         tm *time = std::localtime(&t);
