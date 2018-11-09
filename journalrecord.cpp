@@ -109,7 +109,7 @@ JournalRecord::JournalRecord()
          _impactOnAmountOfCoffee = impactOnAmountOfCoffee;
     }
 
-    double JournalRecord::getCurrentAmountOfCoffee(){
+    double JournalRecord::getCurrentAmountOfCoffee() const{
         return -1;
     }
 

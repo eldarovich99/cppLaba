@@ -27,7 +27,7 @@ public:
     void setConsumerPosition(string _position);
     void setConsumerAcademicDegree(string _academicDegree);
     void setImpactOnAmountOfCoffee(double _impactOnAmountOfCoffee);
-    virtual double getCurrentAmountOfCoffee();
+    virtual double getCurrentAmountOfCoffee() const;
 private:
     struct userInfo{
     public:

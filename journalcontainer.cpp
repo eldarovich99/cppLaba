@@ -128,7 +128,7 @@ void JournalContainer:: writeToFile(string path) const{
             stream << thisRecord.getAccessTime().tm_yday << '\n';
             stream << thisRecord.getAccessTime().tm_year << '\n';
             stream << thisRecord.getCurrentAmountOfCoffee() << '\n';
-            if(thisRecord.getCurrentAmountOfCoffee()==-1){
+            if(thisRecord.getCurrentAmountOfCoffee()+1 < 0.01){
                 stream << thisRecord.getConsumerAcademicDegree() << '\n';
                 stream << thisRecord.getConsumerName() << '\n';
                 stream << thisRecord.getConsumerSurname() << '\n';
@@ -140,7 +140,10 @@ void JournalContainer:: writeToFile(string path) const{
                     stream << thisRecord.getImpactOnAmountOfCoffee();
             }
             else{
-                stream << thisRecord.getCurrentAmountOfCoffee() << '\n';
+                if (i != currentSize-1)
+                    stream << thisRecord.getCurrentAmountOfCoffee() << '\n';
+                else
+                    stream << thisRecord.getCurrentAmountOfCoffee();
             }
         }
     }
@@ -157,7 +160,7 @@ void JournalContainer:: readFromFile(string path){
     string patronymic;
     string position;
     double currentAmountOfCoffee;
-    int impactOnAmountOfCoffee;
+    double impactOnAmountOfCoffee;
     stream.open(path);
         if (stream.is_open()){
             for (int i = 0; !stream.eof(); i++){
@@ -191,9 +194,9 @@ void JournalContainer:: readFromFile(string path){
 
 
                 stream.getline(buffer,50);
-                currentAmountOfCoffee = atoi(buffer);
+                currentAmountOfCoffee = atof(buffer);
 
-                if (currentAmountOfCoffee == -1){
+                if (currentAmountOfCoffee + 1 < 0.01){
                     stream.getline(buffer,50);
                     academicDegree = string(buffer);
 
@@ -235,15 +238,17 @@ bool JournalContainer::compare(JournalContainer container) const
         JournalRecord secondRecord = this->get(i);
         if (firstRecord.getAccessTime().tm_hour != secondRecord.getAccessTime().tm_hour) return false;
         if (firstRecord.getAccessTime().tm_min != secondRecord.getAccessTime().tm_min) return false;
-        if (firstRecord.getCurrentAmountOfCoffee() == -1 and secondRecord.getCurrentAmountOfCoffee() == -1){
+        if (firstRecord.getCurrentAmountOfCoffee() + 1 < 0.01 and secondRecord.getCurrentAmountOfCoffee() + 1 < 0.01){
             if (firstRecord.getConsumerName().compare(secondRecord.getConsumerName())!=0) return false;
             if (firstRecord.getConsumerSurname().compare(secondRecord.getConsumerSurname())!=0) return false;
             if (firstRecord.getConsumerPatronymic().compare(secondRecord.getConsumerPatronymic())!=0) return false;
             if (firstRecord.getConsumerAcademicDegree().compare(secondRecord.getConsumerAcademicDegree())!=0) return false;
             if (firstRecord.getConsumerPosition().compare(secondRecord.getConsumerPosition())!=0) return false;
-            if (firstRecord.getImpactOnAmountOfCoffee()!=secondRecord.getImpactOnAmountOfCoffee()) return false;
+            if (firstRecord.getImpactOnAmountOfCoffee() - secondRecord.getImpactOnAmountOfCoffee() > 0.01 ||
+                firstRecord.getImpactOnAmountOfCoffee() - secondRecord.getImpactOnAmountOfCoffee() < -0.01) return false;
         }
-        else if (firstRecord.getCurrentAmountOfCoffee() != secondRecord.getCurrentAmountOfCoffee()) return false;
+        else if (firstRecord.getImpactOnAmountOfCoffee() - secondRecord.getImpactOnAmountOfCoffee() > 0.01 ||
+                 firstRecord.getImpactOnAmountOfCoffee() - secondRecord.getImpactOnAmountOfCoffee() < -0.01) return false;
     }
     return true;
 }

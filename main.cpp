@@ -20,6 +20,14 @@ double setImpactOnAmountOfCoffee(double impact){
 }*/
 
 //function for displaying all elements
+
+DutyRecord convert(JournalRecord record){
+    JournalRecord *consumerHelper = &record;
+    DutyRecord *dutyHelper;
+    dutyHelper = static_cast<DutyRecord*>(consumerHelper);
+    return  *dutyHelper;
+}
+
 void displayData(JournalContainer container){
     for (int i = 0; i < container.size(); i++){ // check all
         cout << "Element number #" << i << '\n';
@@ -32,12 +40,16 @@ void displayData(JournalContainer container){
         cout << container.get(i).getAccessTime().tm_wday << '\n';
         cout << container.get(i).getAccessTime().tm_yday << '\n';
         cout << container.get(i).getAccessTime().tm_year << '\n';
-        cout << container.get(i).getConsumerAcademicDegree() << '\n';
-        cout << container.get(i).getConsumerName() << '\n';
-        cout << container.get(i).getConsumerPatronymic() << '\n';
-        cout << container.get(i).getConsumerPosition() << '\n';
-        cout << container.get(i).getConsumerSurname() << '\n';
-        cout << container.get(i).getImpactOnAmountOfCoffee() << '\n';
+        if (container.get(i).getCurrentAmountOfCoffee()+1<0.01) {
+            cout << container.get(i).getConsumerAcademicDegree() << '\n';
+            cout << container.get(i).getConsumerName() << '\n';
+            cout << container.get(i).getConsumerPatronymic() << '\n';
+            cout << container.get(i).getConsumerPosition() << '\n';
+            cout << container.get(i).getConsumerSurname() << '\n';
+            cout << container.get(i).getImpactOnAmountOfCoffee() << '\n';
+        }
+        else
+            cout <<container.get(i).getCurrentAmountOfCoffee() << '\n';
         cout << '\n';
     }
 }
@@ -120,22 +132,30 @@ int main()
     // Part 2
 //изменить проверку на объем кофе,добавить сравнение элементов; изменить метод для получения объектов из файлов(воид вместо журнала); зменить сиауты на ассерты в контейнере;
 
-/*
-    JournalContainer container = JournalContainer(); // tests for default constructor
-    container.insert(someConsumer);
-    container.insert(anotherConsumer);
-    container.insert(someConsumer,1);
-    assert(container.size()==3);    // check size
-    container.insert(defaultConsumer);
-    assert(container.size()==4);    // check size after inserting
-    container.writeToFile("data.txt");      //write to file
 
+    JournalContainer container = JournalContainer(); // tests for default constructor
+    DutyRecord record = convert(someConsumer);
+    container.insert(record);
+    record = convert(anotherConsumer);
+    container.insert(record);
+    record = convert(someConsumer);
+    container.insert(record,1);
+    assert(container.size()==3);    // check size
+    record = convert(defaultConsumer);
+    container.insert(record);
+    assert(container.size()==4);    // check size after inserting
+    container.writeToFile("d:/data.txt");      //write to file
+
+    displayData(container);
     //read from file
     JournalContainer thirdContainer = JournalContainer();
-    thirdContainer.readFromFile("data.txt");
-    //cout << thirdContainer.get(3).getConsumerName();
+    thirdContainer.readFromFile("d:/data.txt");
+    cout << "\n\n\n";
+    displayData(thirdContainer);
+    /*
     assert(thirdContainer.compare(container));      // compare recovered container from file
     //cout << container.size() << " " << thirdContainer.size();
+    //cout << thirdContainer.get(3).getConsumerName();
 
     //compare with copy
     assert(container.get(0).getConsumerName().compare(someConsumer.getConsumerName())==0);
@@ -146,7 +166,8 @@ int main()
 
     JournalContainer anotherContainer = JournalContainer(container);        // copying test
     assert(anotherContainer.get(0).getConsumerPosition().compare(container.get(0).getConsumerPosition()) == 0);
-    anotherContainer.insert(anotherConsumer,0);
+    record = convert(anotherConsumer);
+    anotherContainer.insert(record,0);
     assert(anotherContainer.get(0).getConsumerName().compare(container.get(0).getConsumerName()) != 0);
 
     //displaying all elements
