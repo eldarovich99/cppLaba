@@ -13,25 +13,25 @@ public:
     JournalContainer(int numberOfElements, int maxVolume, int currentVolume);
     ~JournalContainer();
     JournalContainer(const JournalContainer &journal);
-    void insert(DutyRecord &record, int position);
-    void insert(DutyRecord &record);
+    void insert(BaseRecord &record, int position);
+    void insert(BaseRecord &record);
     void deleteRecord(int position);
-    DutyRecord get(int index) const;
+    BaseRecord get(int index) const;
     void clear();
     int size() const;
     void trim();
     void writeToFile(std:: string) const;
     void readFromFile(std::string);
     bool compare(JournalContainer container) const;
+    DutyRecord convertToDutyRecord(BaseRecord record) const;
+    JournalRecord convertToJournalRecord(BaseRecord record) const;
 private:
-    DutyRecord *records;
+    BaseRecord *records;
     int sizeOfContainer;
     int currentSize;
     void changeSizeOfContainer(int newSize);
     int currentVolumeOfBulb;
     int maxVolume;
-    //inline void printTime(ofstream stream) const;
-    //inline void getTime(ofstream stream) const;
 };
 
 #endif // JOURNAL_H

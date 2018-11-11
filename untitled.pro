@@ -7,11 +7,13 @@ SOURCES += \
     journalrecord.cpp \
     journalcontainer.cpp \
     main.cpp \
-    dutyrecord.cpp
+    dutyrecord.cpp \
+    baserecord.cpp
 
 HEADERS += \
     journalrecord.h \
     journalcontainer.h \
-    dutyrecord.h
+    dutyrecord.h \
+    baserecord.h
 
 FORMS +=

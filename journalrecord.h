@@ -3,31 +3,97 @@
 
 #include <ctime>
 #include <string>
-//#include <assert.h>
+#include <baserecord.h>
 using namespace std;
 
-class JournalRecord{
+class JournalRecord : public BaseRecord{
 public:
-    JournalRecord();
-    JournalRecord(tm _accessTime, string _name, string _surname, string _patronymic,
-                   string _position, string _academicDegree, double _impactOnAmountOfCoffee);
-    JournalRecord(const JournalRecord &consumer);
-    tm getAccessTime();
-    string getConsumerName() const;
-    string getConsumerSurname() const;
-    string getConsumerPatronymic() const;
-    string getConsumerPosition() const;
-    string getConsumerAcademicDegree() const;
-    double getImpactOnAmountOfCoffee() const;
+    JournalRecord() : BaseRecord(){
+        user._name = "Name";
+        user._surname = "Surname";
+        user._patronymic = "Patronymic";
+        user._position = "Position";
+        user._academicDegree = "Academic degree";
+        _accessTime = getDefaultTime();
+        _impactOnAmountOfCoffee = 0.0;
+    }
+    JournalRecord(tm accessTime, string name, string surname, string patronymic,
+                  string position, string academicDegree, double impactOnAmountOfCoffee) : BaseRecord(accessTime){
+        if (!name.empty())
+            user._name =name;
+        else
+            user._name = "Name";
+        if (!surname.empty())
+            user._surname = surname;
+        else
+            user._surname = "Surname";
+        user._patronymic = patronymic;
 
-    void setAccessTime(tm _accessTime);
-    void setConsumerName(string _name);
-    void setConsumerSurname(string _surname);
-    void setConsumerPatronymic(string _patronymic);
-    void setConsumerPosition(string _position);
-    void setConsumerAcademicDegree(string _academicDegree);
-    void setImpactOnAmountOfCoffee(double _impactOnAmountOfCoffee);
-    virtual double getCurrentAmountOfCoffee() const;
+        if (!position.empty())
+            user._position = position;
+        else
+            user._position = "Position";
+        if (!academicDegree.empty())
+            user._academicDegree = academicDegree;
+        else
+            user._academicDegree = "Academic Degree";
+        _impactOnAmountOfCoffee = impactOnAmountOfCoffee;
+    }
+    JournalRecord(const JournalRecord &consumer) : BaseRecord(static_cast<BaseRecord>(consumer)){
+        user._name = consumer.user._name;
+        user._surname = consumer.user._surname;
+        user._patronymic = consumer.user._patronymic;
+        user._position = consumer.user._position;
+        user._academicDegree = consumer.user._academicDegree;
+        _impactOnAmountOfCoffee = consumer._impactOnAmountOfCoffee;
+    }
+
+    virtual ~JournalRecord();
+
+    virtual inline string getConsumerName() const{
+        return user._name;
+    }
+    virtual inline string getConsumerSurname() const{
+        return user._surname;
+    }
+    virtual inline string getConsumerPatronymic() const{
+        return user._patronymic;
+    }
+    virtual inline string getConsumerPosition() const{
+        return user._position;
+    }
+    virtual inline string getConsumerAcademicDegree() const{
+        return user._academicDegree;
+    }
+    virtual inline double getImpactOnAmountOfCoffee() const{
+        return _impactOnAmountOfCoffee;
+    }
+
+    virtual inline void setConsumerName(string name){
+        if (!name.empty())
+            user._name =name;
+    }
+    virtual inline void setConsumerSurname(string surname){
+        if (!surname.empty())
+            user._surname = surname;
+    }
+    virtual inline void setConsumerPatronymic(string patronymic){
+        user._patronymic = patronymic;
+    }
+    virtual inline void setConsumerPosition(string position){
+        if (!position.empty())
+            user._position = position;
+    }
+    virtual inline void setConsumerAcademicDegree(string academicDegree){
+        if (!academicDegree.empty())
+            user._academicDegree = academicDegree;
+    }
+    virtual inline void setImpactOnAmountOfCoffee(double impactOnAmountOfCoffee){
+        _impactOnAmountOfCoffee = impactOnAmountOfCoffee;
+    }
+    virtual inline double getCurrentAmountOfCoffee() const{
+        return -1;
+    }
 private:
     struct userInfo{
     public:
@@ -39,9 +105,6 @@ private:
         };
     userInfo user;
     double _impactOnAmountOfCoffee;
-protected:
-    tm _accessTime;
-    tm getDefaultTime();
 };
 #endif // JOURNALRECORD_H
 

@@ -31,13 +31,13 @@ JournalContainer:: ~JournalContainer(){
 JournalContainer:: JournalContainer(const JournalContainer &journal){
     this->currentSize = journal.size();
     this->sizeOfContainer = journal.sizeOfContainer;
-    records = new DutyRecord[sizeOfContainer];
+    records = new BaseRecord[sizeOfContainer];
     for (int i=0; i < journal.size(); i++){
-        this->records[i] = DutyRecord(journal.get(i));
+        this->records[i] = BaseRecord(journal.get(i));
     }
 }
 
-void JournalContainer:: insert(DutyRecord &record, int position){
+void JournalContainer:: insert(BaseRecord &record, int position){
     //assert(currentVolumeOfBulb+=record.getImpactOnAmountOfCoffee()>=0 && currentVolumeOfBulb < maxVolume);
     assert(position>=0 and position<sizeOfContainer and
            record.getImpactOnAmountOfCoffee() <= maxVolume and (-1)*record.getImpactOnAmountOfCoffee()<=maxVolume);
@@ -57,7 +57,7 @@ void JournalContainer:: insert(DutyRecord &record, int position){
     currentSize++;
 }
 
-void JournalContainer::insert(DutyRecord &record){
+void JournalContainer::insert(BaseRecord &record){
     insert(record, currentSize);
 }
 
@@ -78,7 +78,7 @@ void JournalContainer:: deleteRecord(int position){       //old method "pop" was
     }
     currentSize--;
 }
-DutyRecord JournalContainer:: get(int index) const {
+BaseRecord JournalContainer:: get(int index) const {
     assert(index >= 0 && index < currentSize);
     return *(records + index);
 }
@@ -99,7 +99,7 @@ int JournalContainer:: size() const{
 }
 
 void JournalContainer:: changeSizeOfContainer(int newSize){
-    DutyRecord *newContainer = new DutyRecord[newSize];
+    BaseRecord *newContainer = new BaseRecord[newSize];
     for (int i = 0; i < sizeOfContainer; i++){     //copy records to the new container
         newContainer[i] = *(records+i);
     }
@@ -117,33 +117,33 @@ void JournalContainer:: writeToFile(string path) const{
     stream.open(path);
         if (stream.is_open()){
         for (int i = 0; i < currentSize; i++){
-            DutyRecord thisRecord = records[i];
-            stream << thisRecord.getAccessTime().tm_hour << '\n';
-            stream << thisRecord.getAccessTime().tm_isdst << '\n';
-            stream << thisRecord.getAccessTime().tm_mday << '\n';
-            stream << thisRecord.getAccessTime().tm_min << '\n';
-            stream << thisRecord.getAccessTime().tm_mon << '\n';
-            stream << thisRecord.getAccessTime().tm_sec<< '\n';
-            stream << thisRecord.getAccessTime().tm_wday << '\n';
-            stream << thisRecord.getAccessTime().tm_yday << '\n';
-            stream << thisRecord.getAccessTime().tm_year << '\n';
-            stream << thisRecord.getCurrentAmountOfCoffee() << '\n';
-            if(thisRecord.getCurrentAmountOfCoffee()+1 < 0.01){
-                stream << thisRecord.getConsumerAcademicDegree() << '\n';
-                stream << thisRecord.getConsumerName() << '\n';
-                stream << thisRecord.getConsumerSurname() << '\n';
-                stream << thisRecord.getConsumerPatronymic() << '\n';
-                stream << thisRecord.getConsumerPosition() << '\n';
+            BaseRecord record = records[i];
+            stream << record.getAccessTime().tm_hour << '\n';
+            stream << record.getAccessTime().tm_isdst << '\n';
+            stream << record.getAccessTime().tm_mday << '\n';
+            stream << record.getAccessTime().tm_min << '\n';
+            stream << record.getAccessTime().tm_mon << '\n';
+            stream << record.getAccessTime().tm_sec<< '\n';
+            stream << record.getAccessTime().tm_wday << '\n';
+            stream << record.getAccessTime().tm_yday << '\n';
+            stream << record.getAccessTime().tm_year << '\n';
+            stream << record.getCurrentAmountOfCoffee() << '\n';
+            if(record.getCurrentAmountOfCoffee()+1 < 0.01 && (-1)*record.getCurrentAmountOfCoffee()+1>-0.01){
+                stream << record.getConsumerAcademicDegree() << '\n';
+                stream << record.getConsumerName() << '\n';
+                stream << record.getConsumerSurname() << '\n';
+                stream << record.getConsumerPatronymic() << '\n';
+                stream << record.getConsumerPosition() << '\n';
                 if (i != currentSize-1)
-                    stream << thisRecord.getImpactOnAmountOfCoffee() << '\n';
+                    stream << record.getImpactOnAmountOfCoffee() << '\n';
                 else
-                    stream << thisRecord.getImpactOnAmountOfCoffee();
+                    stream << record.getImpactOnAmountOfCoffee();
             }
             else{
                 if (i != currentSize-1)
-                    stream << thisRecord.getCurrentAmountOfCoffee() << '\n';
+                    stream << record.getCurrentAmountOfCoffee() << '\n';
                 else
-                    stream << thisRecord.getCurrentAmountOfCoffee();
+                    stream << record.getCurrentAmountOfCoffee();
             }
         }
     }
@@ -216,10 +216,8 @@ void JournalContainer:: readFromFile(string path){
                     impactOnAmountOfCoffee = atoi(buffer);
 
 
-                    JournalRecord consumer(time,name,surname,patronymic,position,academicDegree,impactOnAmountOfCoffee), *consumerHelper = &consumer;
-                    DutyRecord *dutyHelper;
-                    dutyHelper = static_cast<DutyRecord*>(consumerHelper);
-                    this->insert(*dutyHelper);
+                    JournalRecord consumer(time,name,surname,patronymic,position,academicDegree,impactOnAmountOfCoffee);
+                    this->insert(consumer);
                 }
                 else{
                     DutyRecord record(time,currentAmountOfCoffee);
@@ -234,11 +232,12 @@ bool JournalContainer::compare(JournalContainer container) const
     //if (container.size()!=this->size()) return false;
     for (int i=0; i < container.currentSize; i++){
         // обращение к записи каждый раз неэффективно
-        JournalRecord firstRecord = container.get(i);
-        JournalRecord secondRecord = this->get(i);
+        BaseRecord firstRecord = container.get(i);
+        BaseRecord secondRecord = this->get(i);
         if (firstRecord.getAccessTime().tm_hour != secondRecord.getAccessTime().tm_hour) return false;
         if (firstRecord.getAccessTime().tm_min != secondRecord.getAccessTime().tm_min) return false;
-        if (firstRecord.getCurrentAmountOfCoffee() + 1 < 0.01 and secondRecord.getCurrentAmountOfCoffee() + 1 < 0.01){
+        if (firstRecord.getCurrentAmountOfCoffee() + 1 < 0.01 and secondRecord.getCurrentAmountOfCoffee() + 1 < 0.01
+            and (-1)*firstRecord.getCurrentAmountOfCoffee() + 1 >  -0.01 and (-1)*secondRecord.getCurrentAmountOfCoffee() + 1 > -0.01){
             if (firstRecord.getConsumerName().compare(secondRecord.getConsumerName())!=0) return false;
             if (firstRecord.getConsumerSurname().compare(secondRecord.getConsumerSurname())!=0) return false;
             if (firstRecord.getConsumerPatronymic().compare(secondRecord.getConsumerPatronymic())!=0) return false;
@@ -252,3 +251,16 @@ bool JournalContainer::compare(JournalContainer container) const
     }
     return true;
 }
+
+/*DutyRecord JournalContainer::convertToDutyRecord(BaseRecord record) const{
+    DutyRecord *dutyHelper;
+    dutyHelper = static_cast<DutyRecord*>(&record);
+    return  *dutyHelper;
+}
+
+JournalRecord JournalContainer::convertToJournalRecord(BaseRecord record) const{
+    JournalRecord *journalHelper;
+    journalHelper = static_cast<JournalRecord*>(&record);
+    return  *journalHelper;
+}*/
+

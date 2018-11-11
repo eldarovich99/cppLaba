@@ -21,32 +21,40 @@ double setImpactOnAmountOfCoffee(double impact){
 
 //function for displaying all elements
 
-DutyRecord convert(JournalRecord record){
-    JournalRecord *consumerHelper = &record;
+DutyRecord convertToDutyRecord(BaseRecord record){
+    BaseRecord *consumerHelper = &record;
     DutyRecord *dutyHelper;
     dutyHelper = static_cast<DutyRecord*>(consumerHelper);
     return  *dutyHelper;
 }
 
+JournalRecord convertToJournalRecord(BaseRecord record){
+    BaseRecord *consumerHelper = &record;
+    JournalRecord *journalHelper;
+    journalHelper = static_cast<JournalRecord*>(consumerHelper);
+    return  *journalHelper;
+}
+
 void displayData(JournalContainer container){
     for (int i = 0; i < container.size(); i++){ // check all
         cout << "Element number #" << i << '\n';
-        cout << container.get(i).getAccessTime().tm_hour << '\n';
-        cout << container.get(i).getAccessTime().tm_isdst << '\n';
-        cout << container.get(i).getAccessTime().tm_mday << '\n';
-        cout << container.get(i).getAccessTime().tm_min << '\n';
-        cout << container.get(i).getAccessTime().tm_mon << '\n';
-        cout << container.get(i).getAccessTime().tm_sec<< '\n';
-        cout << container.get(i).getAccessTime().tm_wday << '\n';
-        cout << container.get(i).getAccessTime().tm_yday << '\n';
-        cout << container.get(i).getAccessTime().tm_year << '\n';
-        if (container.get(i).getCurrentAmountOfCoffee()+1<0.01) {
-            cout << container.get(i).getConsumerAcademicDegree() << '\n';
-            cout << container.get(i).getConsumerName() << '\n';
-            cout << container.get(i).getConsumerPatronymic() << '\n';
-            cout << container.get(i).getConsumerPosition() << '\n';
-            cout << container.get(i).getConsumerSurname() << '\n';
-            cout << container.get(i).getImpactOnAmountOfCoffee() << '\n';
+        BaseRecord record = container.get(i);
+        cout << record.getAccessTime().tm_hour << '\n';
+        cout << record.getAccessTime().tm_isdst << '\n';
+        cout << record.getAccessTime().tm_mday << '\n';
+        cout << record.getAccessTime().tm_min << '\n';
+        cout << record.getAccessTime().tm_mon << '\n';
+        cout << record.getAccessTime().tm_sec<< '\n';
+        cout << record.getAccessTime().tm_wday << '\n';
+        cout << record.getAccessTime().tm_yday << '\n';
+        cout << record.getAccessTime().tm_year << '\n';
+        if (record.getCurrentAmountOfCoffee()+1<0.01) {
+            cout << record.getConsumerAcademicDegree() << '\n';
+            cout << record.getConsumerName() << '\n';
+            cout << record.getConsumerPatronymic() << '\n';
+            cout << record.getConsumerPosition() << '\n';
+            cout << record.getConsumerSurname() << '\n';
+            cout << record.getImpactOnAmountOfCoffee() << '\n';
         }
         else
             cout <<container.get(i).getCurrentAmountOfCoffee() << '\n';
@@ -134,24 +142,23 @@ int main()
 
 
     JournalContainer container = JournalContainer(); // tests for default constructor
-    DutyRecord record = convert(someConsumer);
-    container.insert(record);
-    record = convert(anotherConsumer);
-    container.insert(record);
-    record = convert(someConsumer);
-    container.insert(record,1);
+    container.insert(someConsumer);
+    container.insert(anotherConsumer);
+    container.insert(someConsumer,1);
     assert(container.size()==3);    // check size
-    record = convert(defaultConsumer);
-    container.insert(record);
+    container.insert(defaultConsumer);
     assert(container.size()==4);    // check size after inserting
+
+
+
     container.writeToFile("d:/data.txt");      //write to file
 
-    displayData(container);
+    //displayData(container);
     //read from file
-    JournalContainer thirdContainer = JournalContainer();
-    thirdContainer.readFromFile("d:/data.txt");
+    //JournalContainer thirdContainer = JournalContainer();
+    //thirdContainer.readFromFile("d:/data.txt");
     cout << "\n\n\n";
-    displayData(thirdContainer);
+    //displayData(thirdContainer);
     /*
     assert(thirdContainer.compare(container));      // compare recovered container from file
     //cout << container.size() << " " << thirdContainer.size();
