@@ -16,17 +16,17 @@ public:
     void insert(BaseRecord &record, int position);
     void insert(BaseRecord &record);
     void deleteRecord(int position);
-    BaseRecord get(int index) const;
+    BaseRecord * get(int index) const;
     void clear();
     int size() const;
     void trim();
     void writeToFile(std:: string) const;
     void readFromFile(std::string);
-    bool compare(JournalContainer container) const;
-    DutyRecord convertToDutyRecord(BaseRecord record) const;
-    JournalRecord convertToJournalRecord(BaseRecord record) const;
+    bool compare(JournalContainer &container) const;
+    DutyRecord convertToDutyRecord(BaseRecord &record) const;
+    JournalRecord convertToJournalRecord(BaseRecord &record) const;
 private:
-    BaseRecord *records;
+    BaseRecord **records;
     int sizeOfContainer;
     int currentSize;
     void changeSizeOfContainer(int newSize);

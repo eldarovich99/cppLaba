@@ -12,22 +12,20 @@ public:
         _currentAmountOfCoffee = currentAmountOfCoffee;
     }
 
-    DutyRecord(const DutyRecord &record): BaseRecord(static_cast<BaseRecord>(record)){
+    DutyRecord(const DutyRecord &record): BaseRecord(record){
         this->_currentAmountOfCoffee = record._currentAmountOfCoffee;
     }
 
     virtual ~DutyRecord();
 
-    virtual inline double getCurrentAmountOfCoffee() const{
-        return _currentAmountOfCoffee;
-    }
-
-    virtual inline void setCurrentAmountOfCoffee(double amount){
-        this->_currentAmountOfCoffee = amount;
-    }
-    virtual inline double getImpactOnAmountOfCoffee() const{
-        return 0;
-    }
+    virtual double getCurrentAmountOfCoffee() const;
+    virtual string getConsumerName() const;
+    virtual string getConsumerSurname() const;
+    virtual string getConsumerPatronymic() const;
+    virtual string getConsumerPosition() const;
+    virtual string getConsumerAcademicDegree() const;
+    virtual double getImpactOnAmountOfCoffee() const;
+    void setCurrentAmountOfCoffee(double amount);
 private:
     double _currentAmountOfCoffee;
 };

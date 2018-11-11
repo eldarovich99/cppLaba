@@ -21,24 +21,25 @@ double setImpactOnAmountOfCoffee(double impact){
 
 //function for displaying all elements
 
-DutyRecord convertToDutyRecord(BaseRecord record){
-    BaseRecord *consumerHelper = &record;
+DutyRecord convertToDutyRecord(BaseRecord *record){
+    BaseRecord *consumerHelper = record;
     DutyRecord *dutyHelper;
     dutyHelper = static_cast<DutyRecord*>(consumerHelper);
     return  *dutyHelper;
 }
 
-JournalRecord convertToJournalRecord(BaseRecord record){
-    BaseRecord *consumerHelper = &record;
+JournalRecord convertToJournalRecord(BaseRecord *record){
+    BaseRecord *consumerHelper = record;
     JournalRecord *journalHelper;
     journalHelper = static_cast<JournalRecord*>(consumerHelper);
     return  *journalHelper;
 }
 
-void displayData(JournalContainer container){
+void displayData(JournalContainer &container){
     for (int i = 0; i < container.size(); i++){ // check all
         cout << "Element number #" << i << '\n';
-        BaseRecord record = container.get(i);
+        BaseRecord *recordBase = container.get(i);
+        JournalRecord record = convertToJournalRecord(recordBase);
         cout << record.getAccessTime().tm_hour << '\n';
         cout << record.getAccessTime().tm_isdst << '\n';
         cout << record.getAccessTime().tm_mday << '\n';
@@ -57,7 +58,7 @@ void displayData(JournalContainer container){
             cout << record.getImpactOnAmountOfCoffee() << '\n';
         }
         else
-            cout <<container.get(i).getCurrentAmountOfCoffee() << '\n';
+            cout <<container.get(i)->getCurrentAmountOfCoffee() << '\n';
         cout << '\n';
     }
 }
@@ -88,7 +89,7 @@ int main()
     u2->tm_year = 25;
     //std::time_t t = std::time(0);   // get time now
    // tm *_accessTime = std::localtime(&t);
-    double impact1 = -5.0;
+    double impact1 = -2.0;
     JournalRecord someConsumer(*u2, "Nikolay", "Sobolev", "Yurievich", "Youtuber", "Graduate", impact1);  // initialized constructor
     assert(someConsumer.getConsumerName().compare("Nikolay")==0);
     assert(someConsumer.getConsumerSurname().compare("Sobolev")==0);
@@ -97,14 +98,14 @@ int main()
     assert(someConsumer.getConsumerAcademicDegree().compare("Graduate")==0);
     assert(someConsumer.getImpactOnAmountOfCoffee() == impact1);
 
-    double fakeImpact = 300.0;
+    /*double fakeImpact = 300.0;
     JournalRecord fakeConsumer(*u2, "", "", "Yurievich", "", "", fakeImpact);  // constructor with bad values
     assert(fakeConsumer.getConsumerName().compare("")!=0);
     assert(fakeConsumer.getConsumerSurname().compare("")!=0);
     assert(fakeConsumer.getConsumerPatronymic().compare("Yurievich")==0);
     assert(fakeConsumer.getConsumerPosition().compare("")!=0);
     assert(fakeConsumer.getConsumerAcademicDegree().compare("")!=0);
-    assert(fakeConsumer.getImpactOnAmountOfCoffee() == fakeImpact);
+    assert(fakeConsumer.getImpactOnAmountOfCoffee() == fakeImpact);*/
 
     JournalRecord anotherConsumer(someConsumer);       // copying the object
     assert(anotherConsumer.getConsumerName().compare(someConsumer.getConsumerName())==0);
@@ -153,36 +154,55 @@ int main()
 
     container.writeToFile("d:/data.txt");      //write to file
 
-    //displayData(container);
+    displayData(container);
     //read from file
-    //JournalContainer thirdContainer = JournalContainer();
-    //thirdContainer.readFromFile("d:/data.txt");
+    JournalContainer thirdContainer = JournalContainer();
+    thirdContainer.readFromFile("d:/data.txt");
     cout << "\n\n\n";
     //displayData(thirdContainer);
-    /*
-    assert(thirdContainer.compare(container));      // compare recovered container from file
+    cout << '\n';
+
+    //assert(thirdContainer.compare(container));      // compare recovered container from file
     //cout << container.size() << " " << thirdContainer.size();
     //cout << thirdContainer.get(3).getConsumerName();
 
     //compare with copy
-    assert(container.get(0).getConsumerName().compare(someConsumer.getConsumerName())==0);
-    assert(container.get(1).getConsumerName().compare(someConsumer.getConsumerName())==0);
-    assert(container.get(2).getConsumerName().compare(anotherConsumer.getConsumerName())==0);
+    assert(container.get(0)->getConsumerName().compare(someConsumer.getConsumerName())==0);
+    assert(container.get(1)->getConsumerName().compare(someConsumer.getConsumerName())==0);
+    assert(container.get(2)->getConsumerName().compare(anotherConsumer.getConsumerName())==0);
     container.deleteRecord(2);
     assert(container.size()==3);    //check size after deletion
 
     JournalContainer anotherContainer = JournalContainer(container);        // copying test
-    assert(anotherContainer.get(0).getConsumerPosition().compare(container.get(0).getConsumerPosition()) == 0);
-    record = convert(anotherConsumer);
-    anotherContainer.insert(record,0);
-    assert(anotherContainer.get(0).getConsumerName().compare(container.get(0).getConsumerName()) != 0);
+    assert(anotherContainer.get(0)->getConsumerPosition().compare(container.get(0)->getConsumerPosition()) == 0);
+    anotherContainer.insert(anotherConsumer,0);
+    assert(anotherContainer.get(0)->getConsumerName().compare(container.get(0)->getConsumerName()) != 0);
 
     //displaying all elements
     displayData(anotherContainer);
 
     container.clear();      // check clear function
-    assert(container.size()==0);*/
+    assert(container.size()==0);
     return 0;
 }
 
-
+/*
+        BaseRecord *recordBase = container.get(i);
+        JournalRecord record = convertToJournalRecord(recordBase);
+        cout << record->getAccessTime().tm_hour << '\n';
+        cout << record->getAccessTime().tm_isdst << '\n';
+        cout << record->getAccessTime().tm_mday << '\n';
+        cout << record->getAccessTime().tm_min << '\n';
+        cout << record->getAccessTime().tm_mon << '\n';
+        cout << record->getAccessTime().tm_sec<< '\n';
+        cout << record->getAccessTime().tm_wday << '\n';
+        cout << record->getAccessTime().tm_yday << '\n';
+        cout << record->getAccessTime().tm_year << '\n';
+        if (record->getCurrentAmountOfCoffee()+1<0.01) {
+            cout << record->getConsumerAcademicDegree() << '\n';
+            cout << record->getConsumerName() << '\n';
+            cout << record->getConsumerPatronymic() << '\n';
+            cout << record->getConsumerPosition() << '\n';
+            cout << record->getConsumerSurname() << '\n';
+            cout << record->getImpactOnAmountOfCoffee() << '\n';
+*/

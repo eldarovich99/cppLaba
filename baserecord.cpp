@@ -22,3 +22,26 @@ BaseRecord::BaseRecord(const BaseRecord &record){
 }
 BaseRecord::~BaseRecord(){
 }
+/*
+string BaseRecord::getConsumerName() const{
+    return nullptr;
+}
+string BaseRecord::getConsumerSurname() const{
+    return nullptr;
+}
+string BaseRecord::getConsumerPatronymic() const{
+    return nullptr;
+}
+string BaseRecord::getConsumerPosition() const{
+    return nullptr;
+}
+string BaseRecord::getConsumerAcademicDegree() const{
+    return nullptr;
+}
+
+double BaseRecord::getCurrentAmountOfCoffee() const{
+    return -1;
+}
+double BaseRecord::getImpactOnAmountOfCoffee() const{
+    return 0;
+}*/

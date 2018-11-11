@@ -25,30 +25,15 @@ public:
     }
 
 
-    inline virtual string getConsumerName() const{
-        return nullptr;
-    }
-    virtual string getConsumerSurname() const{
-        return nullptr;
-    }
-    virtual string getConsumerPatronymic() const{
-        return nullptr;
-    }
-    virtual string getConsumerPosition() const{
-        return nullptr;
-    }
-    virtual string getConsumerAcademicDegree() const{
-        return nullptr;
-    }
+    virtual string getConsumerName() const=0;
+    virtual string getConsumerSurname() const=0;
+    virtual string getConsumerPatronymic() const=0;
+    virtual string getConsumerPosition() const=0;
+    virtual string getConsumerAcademicDegree() const=0;
 
-    virtual double getCurrentAmountOfCoffee() const{
-        return -1;
-    }
-    virtual double getImpactOnAmountOfCoffee() const{
-        return 0;
-    }
+    virtual double getCurrentAmountOfCoffee() const=0;
+    virtual double getImpactOnAmountOfCoffee() const=0;
 protected:
-    tm timeOfObservation;
     tm _accessTime;
     inline tm getDefaultTime() const{
         std::time_t t = std::time(nullptr);   // get time now
