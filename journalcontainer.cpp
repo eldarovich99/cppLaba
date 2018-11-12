@@ -33,6 +33,7 @@ JournalContainer:: ~JournalContainer(){
 JournalContainer:: JournalContainer(const JournalContainer &journal){
     this->currentSize = journal.size();
     this->sizeOfContainer = journal.sizeOfContainer;
+    this->maxVolume = journal.maxVolume;
     records = new BaseRecord*[sizeOfContainer];
     for (int i=0; i < journal.size(); i++){
         *(records+i) = journal.get(i);
@@ -71,7 +72,7 @@ void JournalContainer:: deleteRecord(int position){       //old method "pop" was
     assert(position >=0 and position < currentSize);
     if (position == currentSize-1){
         //currentVolumeOfBulb-=records[position].getImpactOnAmountOfCoffee();
-        delete records[position];  //here was &
+        delete &records[position];  //here was &
     }
     else{
         for (int i = position; i < currentSize; i++)
@@ -97,6 +98,8 @@ void JournalContainer:: clear(){
         delete &records[i];     //here was &
     }
     currentSize = 0;
+    sizeOfContainer = 10;
+    records = new BaseRecord*[sizeOfContainer];
 };
 
 int JournalContainer:: size() const{
@@ -104,7 +107,7 @@ int JournalContainer:: size() const{
 }
 
 void JournalContainer:: changeSizeOfContainer(int newSize){
-    BaseRecord **newContainer = new BaseRecord*[newSize];
+    auto **newContainer = new BaseRecord*[newSize];
     for (int i = 0; i < sizeOfContainer; i++){     //copy records to the new container
         newContainer[i] = *(records+i);
     }
@@ -116,7 +119,7 @@ void JournalContainer:: changeSizeOfContainer(int newSize){
     records = newContainer;
 }
 
-void JournalContainer:: writeToFile(const string path) const{
+void JournalContainer:: writeToFile(const string &path) const{
     std::ofstream stream;
     //stream >> i;
     stream.open(path);
@@ -159,7 +162,7 @@ void JournalContainer:: writeToFile(const string path) const{
     stream.close();
 }
 
-void JournalContainer:: readFromFile(const string path){
+void JournalContainer:: readFromFile(const string &path){
     std::ifstream stream;
     char buffer[50];
     tm time;
@@ -266,7 +269,8 @@ bool JournalContainer::compare(JournalContainer &container) const
         if (firstRecord->defineElement() == 1 and secondRecord->defineElement()==1){
             auto* firstJournalRecord = dynamic_cast<JournalRecord*>(firstRecord);
             auto* secondJournalRecord = dynamic_cast<JournalRecord*>(secondRecord);
-            if (firstJournalRecord->getConsumerName().compare(secondJournalRecord->getConsumerName())!=0) return false;
+            //if (firstJournalRecord->getConsumerName().compare(secondJournalRecord->getConsumerName())!=0) return false;
+            if (firstJournalRecord->getConsumerName()==secondJournalRecord->getConsumerName()) return false;
             if (firstJournalRecord->getConsumerSurname().compare(secondJournalRecord->getConsumerSurname())!=0) return false;
             if (firstJournalRecord->getConsumerPatronymic().compare(secondJournalRecord->getConsumerPatronymic())!=0) return false;
             if (firstJournalRecord->getConsumerAcademicDegree().compare(secondJournalRecord->getConsumerAcademicDegree())!=0) return false;

@@ -1,7 +1,5 @@
 #include "journalrecord.h"
-JournalRecord::~JournalRecord(){
-
-}
+JournalRecord::~JournalRecord()=default;
 string JournalRecord::getConsumerName() const{
     return user._name;
 }

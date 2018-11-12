@@ -20,8 +20,7 @@ BaseRecord::BaseRecord(tm accessTime){
 BaseRecord::BaseRecord(const BaseRecord &record){
     this->_accessTime = record._accessTime;
 }
-BaseRecord::~BaseRecord(){
-}
+BaseRecord::~BaseRecord()=default;
 /*
 string BaseRecord::getConsumerName() const{
     return nullptr;

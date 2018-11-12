@@ -1,7 +1,5 @@
 #include "dutyrecord.h"
-DutyRecord:: ~DutyRecord(){
-
-}
+DutyRecord:: ~DutyRecord()=default;
 
 double DutyRecord::getCurrentAmountOfCoffee() const{
     return _currentAmountOfCoffee;

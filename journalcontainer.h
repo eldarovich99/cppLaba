@@ -20,8 +20,8 @@ public:
     void clear();
     int size() const;
     void trim();
-    void writeToFile(const std:: string path) const;
-    void readFromFile(const std::string path);
+    void writeToFile(const std:: string &path) const;
+    void readFromFile(const std::string &path);
     bool compare(JournalContainer &container) const;
     DutyRecord convertToDutyRecord(BaseRecord &record) const;
     JournalRecord convertToJournalRecord(BaseRecord &record) const;
