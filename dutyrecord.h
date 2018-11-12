@@ -17,14 +17,14 @@ public:
     }
 
     virtual ~DutyRecord();
-
-    virtual double getCurrentAmountOfCoffee() const;
-    virtual string getConsumerName() const;
-    virtual string getConsumerSurname() const;
-    virtual string getConsumerPatronymic() const;
-    virtual string getConsumerPosition() const;
-    virtual string getConsumerAcademicDegree() const;
-    virtual double getImpactOnAmountOfCoffee() const;
+    virtual int defineElement() const;
+    double getCurrentAmountOfCoffee() const;
+    string getConsumerName() const;
+    string getConsumerSurname() const;
+    string getConsumerPatronymic() const;
+    string getConsumerPosition() const;
+    string getConsumerAcademicDegree() const;
+    double getImpactOnAmountOfCoffee() const;
     void setCurrentAmountOfCoffee(double amount);
 private:
     double _currentAmountOfCoffee;

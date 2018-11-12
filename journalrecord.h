@@ -49,14 +49,14 @@ public:
     }
 
     virtual ~JournalRecord();
-
-    virtual string getConsumerName() const;
-    virtual string getConsumerSurname() const;
-    virtual string getConsumerPatronymic() const;
-    virtual string getConsumerPosition() const;
-    virtual string getConsumerAcademicDegree() const;
-    virtual double getImpactOnAmountOfCoffee() const;
-    virtual double getCurrentAmountOfCoffee() const;
+    virtual int defineElement() const;
+    string getConsumerName() const;
+    string getConsumerSurname() const;
+    string getConsumerPatronymic() const;
+    string getConsumerPosition() const;
+    string getConsumerAcademicDegree() const;
+    double getImpactOnAmountOfCoffee() const;
+    double getCurrentAmountOfCoffee() const;
     inline void setConsumerName(string name){
         if (!name.empty())
             user._name =name;

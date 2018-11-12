@@ -23,3 +23,6 @@ double JournalRecord::getImpactOnAmountOfCoffee() const{
 double JournalRecord::getCurrentAmountOfCoffee()const{
     return -1;
 }
+int JournalRecord::defineElement() const{
+    return 1;
+}

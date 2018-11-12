@@ -2,26 +2,28 @@
 #include "dutyrecord.h"
 #include <iostream>
 #include <fstream>
-#include <assert.h>
+#include <cassert>
 
+
+//переделать контейнер так, чтобы копировались объекты, а не указатели;
+//в функции очистки как и в деструкторе;delete records[i];  удаляет указатель
+//переделать наследование, чтобы было различение объектов и далее в контейнере ветвление
 JournalContainer:: JournalContainer(){
     currentSize = 0;
     sizeOfContainer = 10;
     maxVolume = 30;
-    currentVolumeOfBulb = maxVolume;
     records = new BaseRecord*[sizeOfContainer];
 }
 
-JournalContainer:: JournalContainer(int numberOfElements, int maxVolume, int currentVolume){
+JournalContainer:: JournalContainer(int numberOfElements, int maxVolume){
     currentSize = sizeOfContainer = numberOfElements;
     this->maxVolume = maxVolume;
-    this->currentVolumeOfBulb = currentVolume;
     records = new BaseRecord*[sizeOfContainer];
 }
 
 JournalContainer:: ~JournalContainer(){
-    for (int i = 0; i < sizeOfContainer; i++){
-        delete &records[i];
+    for (int i = sizeOfContainer-1; i >=0; i--){
+        delete &records[i]; // here was &
     }
     currentSize = 0;
     sizeOfContainer=0;
@@ -33,26 +35,29 @@ JournalContainer:: JournalContainer(const JournalContainer &journal){
     this->sizeOfContainer = journal.sizeOfContainer;
     records = new BaseRecord*[sizeOfContainer];
     for (int i=0; i < journal.size(); i++){
-        this->records[i] = journal.get(i);
+        *(records+i) = journal.get(i);
     }
 }
 
 void JournalContainer:: insert(BaseRecord &record, int position){
-    //assert(currentVolumeOfBulb+=record.getImpactOnAmountOfCoffee()>=0 && currentVolumeOfBulb < maxVolume);
-    assert(position>=0 and position<sizeOfContainer and
-           record.getImpactOnAmountOfCoffee() <= maxVolume and (-1)*record.getImpactOnAmountOfCoffee()<=maxVolume);
-    if (position > currentSize) position = currentSize;
-    if (currentSize >= sizeOfContainer)
-    {                // expand the array
-        changeSizeOfContainer(currentSize*2);
-    }
-    if (position == currentSize)
-        *(records+position) = &record;
-    else {
-        for (int i = currentSize; i > position;i--){    //move array
-            *(records+i) = *(records+i-1);
+    if (record.defineElement()==1){
+        auto* journalRecord = dynamic_cast<JournalRecord*>(&record);
+        assert(position>=0 and position<sizeOfContainer and
+               journalRecord->getImpactOnAmountOfCoffee() <= maxVolume
+               and (-1)*journalRecord->getImpactOnAmountOfCoffee()>= -maxVolume);
+        if (position > currentSize) position = currentSize;
+        if (currentSize >= sizeOfContainer)
+        {                // expand the array
+            changeSizeOfContainer(currentSize*2);
         }
-        *(records+position) = &record;
+        if (position == currentSize)
+            *(records+position) = &record;
+        else {
+            for (int i = currentSize; i > position;i--){    //move array
+                *(records+i) = *(records+i-1);
+            }
+            *(records+position) = &record;
+        }
     }
     currentSize++;
 }
@@ -66,7 +71,7 @@ void JournalContainer:: deleteRecord(int position){       //old method "pop" was
     assert(position >=0 and position < currentSize);
     if (position == currentSize-1){
         //currentVolumeOfBulb-=records[position].getImpactOnAmountOfCoffee();
-        delete &records[position];
+        delete records[position];  //here was &
     }
     else{
         for (int i = position; i < currentSize; i++)
@@ -74,7 +79,7 @@ void JournalContainer:: deleteRecord(int position){       //old method "pop" was
 
         //currentVolumeOfBulb-=records[position].getImpactOnAmountOfCoffee();
 
-        delete &records[currentSize - 1];
+        delete &records[currentSize - 1]; //here was &
     }
     currentSize--;
 }
@@ -88,8 +93,8 @@ void JournalContainer:: trim(){
 }
 
 void JournalContainer:: clear(){
-    for (int i = 0; i < sizeOfContainer; i++){
-        delete &records[i];
+    for (int i = sizeOfContainer-1; i >=0 ; i--){
+        delete &records[i];     //here was &
     }
     currentSize = 0;
 };
@@ -104,53 +109,57 @@ void JournalContainer:: changeSizeOfContainer(int newSize){
         newContainer[i] = *(records+i);
     }
     for (int i = 0; i < sizeOfContainer; i++){      // delete the old container
-        delete &records[i];
+        delete &records[i];     //here was &
     }
     delete[](records);
     sizeOfContainer = newSize;
     records = newContainer;
 }
 
-void JournalContainer:: writeToFile(string path) const{
+void JournalContainer:: writeToFile(const string path) const{
     std::ofstream stream;
     //stream >> i;
     stream.open(path);
         if (stream.is_open()){
         for (int i = 0; i < currentSize; i++){
             BaseRecord *record = records[i];
-            stream << record->getAccessTime().tm_hour << '\n';
-            stream << record->getAccessTime().tm_isdst << '\n';
-            stream << record->getAccessTime().tm_mday << '\n';
-            stream << record->getAccessTime().tm_min << '\n';
-            stream << record->getAccessTime().tm_mon << '\n';
-            stream << record->getAccessTime().tm_sec<< '\n';
-            stream << record->getAccessTime().tm_wday << '\n';
-            stream << record->getAccessTime().tm_yday << '\n';
-            stream << record->getAccessTime().tm_year << '\n';
-            stream << record->getCurrentAmountOfCoffee() << '\n';
-            if(record->getCurrentAmountOfCoffee()+1 < 0.01 && (-1)*record->getCurrentAmountOfCoffee()+1>-0.01){
-                stream << record->getConsumerAcademicDegree() << '\n';
-                stream << record->getConsumerName() << '\n';
-                stream << record->getConsumerSurname() << '\n';
-                stream << record->getConsumerPatronymic() << '\n';
-                stream << record->getConsumerPosition() << '\n';
+            tm time = record->getAccessTime();
+            stream << time.tm_hour << '\n';
+            stream << time.tm_isdst << '\n';
+            stream << time.tm_mday << '\n';
+            stream << time.tm_min << '\n';
+            stream << time.tm_mon << '\n';
+            stream << time.tm_sec<< '\n';
+            stream << time.tm_wday << '\n';
+            stream << time.tm_yday << '\n';
+            stream << time.tm_year << '\n';
+            stream << record->defineElement() << '\n';
+            if(record->defineElement() == 1){
+                auto* journalRecord = dynamic_cast<JournalRecord*>(record);
+                stream << journalRecord->getConsumerAcademicDegree() << '\n';
+                stream << journalRecord->getConsumerName() << '\n';
+                stream << journalRecord->getConsumerSurname() << '\n';
+                stream << journalRecord->getConsumerPatronymic() << '\n';
+                stream << journalRecord->getConsumerPosition() << '\n';
                 if (i != currentSize-1)
-                    stream << record->getImpactOnAmountOfCoffee() << '\n';
+                    stream << journalRecord->getImpactOnAmountOfCoffee() << '\n';
                 else
-                    stream << record->getImpactOnAmountOfCoffee();
+                    stream << journalRecord->getImpactOnAmountOfCoffee();
             }
             else{
+                auto* journalRecord = dynamic_cast<DutyRecord*>(record);
                 if (i != currentSize-1)
-                    stream << record->getCurrentAmountOfCoffee() << '\n';
+                    stream << journalRecord->getCurrentAmountOfCoffee() << '\n';
                 else
-                    stream << record->getCurrentAmountOfCoffee();
+                    stream << journalRecord->getCurrentAmountOfCoffee();
             }
         }
     }
     stream.flush();
+    stream.close();
 }
 
-void JournalContainer:: readFromFile(string path){
+void JournalContainer:: readFromFile(const string path){
     std::ifstream stream;
     char buffer[50];
     tm time;
@@ -159,7 +168,7 @@ void JournalContainer:: readFromFile(string path){
     string surname;
     string patronymic;
     string position;
-    double currentAmountOfCoffee;
+    int elementDefinition;
     double impactOnAmountOfCoffee;
     stream.open(path);
         if (stream.is_open()){
@@ -167,75 +176,77 @@ void JournalContainer:: readFromFile(string path){
                 //amount of copypaste reduced
                 stream.getline(buffer, 50);
                 time.tm_hour = atoi(buffer);
-                *buffer = NULL;
+                //*buffer = NULL;
 
                 stream.getline(buffer,50);
                 time.tm_isdst = atoi(buffer);
-                *buffer = NULL;
+                //*buffer = NULL;
 
                 stream.getline(buffer,50);
                 time.tm_mday = atoi(buffer);
-                *buffer = NULL;
+                //*buffer = NULL;
 
                 stream.getline(buffer,50);
                 time.tm_min = atoi(buffer);
-                *buffer = NULL;
+                //*buffer = NULL;
 
                 stream.getline(buffer,50);
                 time.tm_mon = atoi(buffer);
-                *buffer = NULL;
+                //*buffer = NULL;
 
                 stream.getline(buffer,50);
                 time.tm_sec = atoi(buffer);
-                *buffer = NULL;
+                //*buffer = NULL;
 
                 stream.getline(buffer,50);
                 time.tm_wday = atoi(buffer);
-                *buffer = NULL;
+                //*buffer = NULL;
 
                 stream.getline(buffer,50);
                 time.tm_yday = atoi(buffer);
-                *buffer = NULL;
+                //*buffer = NULL;
 
                 stream.getline(buffer,50);
                 time.tm_year = atoi(buffer);
-                *buffer = NULL;
+                //*buffer = NULL;
 
 
                 stream.getline(buffer,50);
-                currentAmountOfCoffee = atof(buffer);
-                *buffer = NULL;
+                elementDefinition = atoi(buffer);
+                //*buffer = NULL;
 
-                if (currentAmountOfCoffee + 1 < 0.01){
+                if (elementDefinition == 1){
                     stream.getline(buffer,50);
                     academicDegree = string(buffer);
-                    *buffer = NULL;
+                    //*buffer = NULL;
 
                     stream.getline(buffer,50);
                     name = string(buffer);
-                    *buffer = NULL;
+                    //*buffer = NULL;
 
                     stream.getline(buffer,50);
                     surname = string(buffer);
-                    *buffer = NULL;
+                    //*buffer = NULL;
 
                     stream.getline(buffer,50);
                     patronymic = string(buffer);
-                    *buffer = NULL;
+                    //*buffer = NULL;
 
                     stream.getline(buffer,50);
                     position = string(buffer);
-                    *buffer = NULL;
+                    //*buffer = NULL;
 
                     stream.getline(buffer,50);
                     impactOnAmountOfCoffee = atoi(buffer);
-                    *buffer = NULL;
+                    //*buffer = NULL;
 
 
                     JournalRecord consumer = JournalRecord(time,name,surname,patronymic,position,academicDegree,impactOnAmountOfCoffee);
                     this->insert(consumer);
                 }
                 else{
+                    stream.getline(buffer,50);
+                    double currentAmountOfCoffee = atof(buffer);
                     DutyRecord record = DutyRecord(time,currentAmountOfCoffee);
                     this->insert(record);
                 }
@@ -252,18 +263,24 @@ bool JournalContainer::compare(JournalContainer &container) const
         BaseRecord *secondRecord = this->get(i);
         if (firstRecord->getAccessTime().tm_hour != secondRecord->getAccessTime().tm_hour) return false;
         if (firstRecord->getAccessTime().tm_min != secondRecord->getAccessTime().tm_min) return false;
-        if (firstRecord->getCurrentAmountOfCoffee() + 1 < 0.01 and secondRecord->getCurrentAmountOfCoffee() + 1 < 0.01
-            and (-1)*firstRecord->getCurrentAmountOfCoffee() + 1 >  -0.01 and (-1)*secondRecord->getCurrentAmountOfCoffee() + 1 > -0.01){
-            if (firstRecord->getConsumerName().compare(secondRecord->getConsumerName())!=0) return false;
-            if (firstRecord->getConsumerSurname().compare(secondRecord->getConsumerSurname())!=0) return false;
-            if (firstRecord->getConsumerPatronymic().compare(secondRecord->getConsumerPatronymic())!=0) return false;
-            if (firstRecord->getConsumerAcademicDegree().compare(secondRecord->getConsumerAcademicDegree())!=0) return false;
-            if (firstRecord->getConsumerPosition().compare(secondRecord->getConsumerPosition())!=0) return false;
-            if (firstRecord->getImpactOnAmountOfCoffee() - secondRecord->getImpactOnAmountOfCoffee() > 0.01 ||
-                firstRecord->getImpactOnAmountOfCoffee() - secondRecord->getImpactOnAmountOfCoffee() < -0.01) return false;
+        if (firstRecord->defineElement() == 1 and secondRecord->defineElement()==1){
+            auto* firstJournalRecord = dynamic_cast<JournalRecord*>(firstRecord);
+            auto* secondJournalRecord = dynamic_cast<JournalRecord*>(secondRecord);
+            if (firstJournalRecord->getConsumerName().compare(secondJournalRecord->getConsumerName())!=0) return false;
+            if (firstJournalRecord->getConsumerSurname().compare(secondJournalRecord->getConsumerSurname())!=0) return false;
+            if (firstJournalRecord->getConsumerPatronymic().compare(secondJournalRecord->getConsumerPatronymic())!=0) return false;
+            if (firstJournalRecord->getConsumerAcademicDegree().compare(secondJournalRecord->getConsumerAcademicDegree())!=0) return false;
+            if (firstJournalRecord->getConsumerPosition().compare(secondJournalRecord->getConsumerPosition())!=0) return false;
+            if (firstJournalRecord->getImpactOnAmountOfCoffee() - secondJournalRecord->getImpactOnAmountOfCoffee() > 0.01 ||
+                firstJournalRecord->getImpactOnAmountOfCoffee() - secondJournalRecord->getImpactOnAmountOfCoffee() < -0.01) return false;
         }
-        else if (firstRecord->getImpactOnAmountOfCoffee() - secondRecord->getImpactOnAmountOfCoffee() > 0.01 ||
-                 firstRecord->getImpactOnAmountOfCoffee() - secondRecord->getImpactOnAmountOfCoffee() < -0.01) return false;
+        else if (firstRecord->defineElement()==2 && secondRecord->defineElement()==2){
+            auto* firstDutyRecord = dynamic_cast<DutyRecord*>(firstRecord);
+            auto* secondDutyRecord = dynamic_cast<DutyRecord*>(secondRecord);
+            if (firstDutyRecord->getCurrentAmountOfCoffee() - secondDutyRecord->getCurrentAmountOfCoffee() > 0.01
+                || firstDutyRecord->getCurrentAmountOfCoffee() - secondDutyRecord->getCurrentAmountOfCoffee() < -0.01 ) return false;
+        }
+        else return false;
     }
     return true;
 }

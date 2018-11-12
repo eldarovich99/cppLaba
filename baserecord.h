@@ -25,14 +25,7 @@ public:
     }
 
 
-    virtual string getConsumerName() const=0;
-    virtual string getConsumerSurname() const=0;
-    virtual string getConsumerPatronymic() const=0;
-    virtual string getConsumerPosition() const=0;
-    virtual string getConsumerAcademicDegree() const=0;
-
-    virtual double getCurrentAmountOfCoffee() const=0;
-    virtual double getImpactOnAmountOfCoffee() const=0;
+    virtual int defineElement() const=0;
 protected:
     tm _accessTime;
     inline tm getDefaultTime() const{

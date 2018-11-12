@@ -29,3 +29,6 @@ string DutyRecord::getConsumerAcademicDegree() const{
 double DutyRecord::getImpactOnAmountOfCoffee() const{
     return 0;
 }
+int DutyRecord::defineElement() const{
+    return 2;
+}
