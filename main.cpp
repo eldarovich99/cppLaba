@@ -61,11 +61,11 @@ int main()
 
     JournalRecord defaultConsumer;     // default constructor
     auto *u2 = new tm();
-    assert(defaultConsumer.getConsumerName().compare("Name")==0);
-    assert(defaultConsumer.getConsumerSurname().compare("Surname")==0);
-    assert(defaultConsumer.getConsumerPatronymic().compare("Patronymic")==0);
-    assert(defaultConsumer.getConsumerPosition().compare("Position")==0);
-    assert(defaultConsumer.getConsumerAcademicDegree().compare("Academic degree")==0);
+    assert(defaultConsumer.getConsumerName()=="Name");
+    assert(defaultConsumer.getConsumerSurname()=="Surname");
+    assert(defaultConsumer.getConsumerPatronymic()=="Patronymic");
+    assert(defaultConsumer.getConsumerPosition()=="Position");
+    assert(defaultConsumer.getConsumerAcademicDegree()=="Academic degree");
     assert(defaultConsumer.getImpactOnAmountOfCoffee()==0.0);
     std::time_t t = std::time(nullptr);   // get time now
     tm *accessTime = std::localtime(&t);
@@ -84,11 +84,11 @@ int main()
    // tm *_accessTime = std::localtime(&t);
     double impact1 = 2.0;
     JournalRecord someConsumer(*u2, "Nikolay", "Sobolev", "Yurievich", "Youtuber", "Graduate", impact1);  // initialized constructor
-    assert(someConsumer.getConsumerName().compare("Nikolay")==0);
-    assert(someConsumer.getConsumerSurname().compare("Sobolev")==0);
-    assert(someConsumer.getConsumerPatronymic().compare("Yurievich")==0);
-    assert(someConsumer.getConsumerPosition().compare("Youtuber")==0);
-    assert(someConsumer.getConsumerAcademicDegree().compare("Graduate")==0);
+    assert(someConsumer.getConsumerName()=="Nikolay");
+    assert(someConsumer.getConsumerSurname()=="Sobolev");
+    assert(someConsumer.getConsumerPatronymic()=="Yurievich");
+    assert(someConsumer.getConsumerPosition()=="Youtuber");
+    assert(someConsumer.getConsumerAcademicDegree()=="Graduate");
     assert(someConsumer.getImpactOnAmountOfCoffee() - impact1 < 0.01 && someConsumer.getImpactOnAmountOfCoffee() - impact1 > -0.01);
 
     /*double fakeImpact = 300.0;
@@ -101,19 +101,19 @@ int main()
     assert(fakeConsumer.getImpactOnAmountOfCoffee() == fakeImpact);*/
 
     JournalRecord anotherConsumer(someConsumer);       // copying the object
-    assert(anotherConsumer.getConsumerName().compare(someConsumer.getConsumerName())==0);
-    assert(anotherConsumer.getConsumerSurname().compare(someConsumer.getConsumerSurname())==0);
-    assert(anotherConsumer.getConsumerPatronymic().compare(someConsumer.getConsumerPatronymic())==0);
-    assert(anotherConsumer.getConsumerPosition().compare(someConsumer.getConsumerPosition())==0);
-    assert(anotherConsumer.getConsumerAcademicDegree().compare(someConsumer.getConsumerAcademicDegree())==0);
+    assert(anotherConsumer.getConsumerName()==someConsumer.getConsumerName());
+    assert(anotherConsumer.getConsumerSurname()==someConsumer.getConsumerSurname());
+    assert(anotherConsumer.getConsumerPatronymic()==someConsumer.getConsumerPatronymic());
+    assert(anotherConsumer.getConsumerPosition()==someConsumer.getConsumerPosition());
+    assert(anotherConsumer.getConsumerAcademicDegree()==someConsumer.getConsumerAcademicDegree());
     assert(anotherConsumer.getImpactOnAmountOfCoffee() - impact1<0.01 && anotherConsumer.getImpactOnAmountOfCoffee() - impact1 > -0.01);
 
     anotherConsumer.setConsumerName("Vladimir");
     anotherConsumer.setConsumerName("");
-    assert(anotherConsumer.getConsumerName().compare("Vladimir")==0);
-    assert(someConsumer.getConsumerName().compare("Nikolay")==0);   // original object remains the same
+    assert(anotherConsumer.getConsumerName()=="Vladimir");
+    assert(someConsumer.getConsumerName()=="Nikolay");   // original object remains the same
     anotherConsumer.setConsumerSurname("Lenin");
-    assert(anotherConsumer.getConsumerSurname().compare("Lenin")==0);
+    assert(anotherConsumer.getConsumerSurname()=="Lenin");
     double impact2 = 8.0;
     anotherConsumer.setImpactOnAmountOfCoffee(impact2);
     anotherConsumer.setImpactOnAmountOfCoffee(impact2);       //uncorrect values are ignored
@@ -146,7 +146,7 @@ int main()
 
 
 
-    container.writeToFile("d:/data.txt");      //write to file
+    //container.writeToFile("d:/data.txt");      //write to file
 
 
     //read from file
