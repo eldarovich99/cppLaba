@@ -24,7 +24,10 @@ JournalContainer:: JournalContainer(int numberOfElements, int maxVolume){
 }
 
 JournalContainer:: ~JournalContainer(){
-    for (int i = currentSize-1; i >=0; i--){
+    /*for (int i = currentSize-1; i >=0; i--){
+        delete &records[i]; // here was &
+    }*/
+    for (int i = 0; i < currentSize; i++){
         delete &records[i]; // here was &
     }
     currentSize = 0;
@@ -125,8 +128,11 @@ void JournalContainer:: trim(){
 }
 
 void JournalContainer:: clear(){
-    for (int i = currentSize-1; i >=0 ; i--){
+    /*for (int i = currentSize-1; i >=0 ; i--){
         delete &records[i];     //here was &
+    }*/
+    for (int i = 0; i < currentSize; i++){
+        delete &records[i]; // here was &
     }
     currentSize = 0;
     sizeOfContainer = 10;

@@ -171,7 +171,7 @@ int main()
     displayData(container);
 
     JournalContainer anotherContainer = JournalContainer(container);        // copying test
-    //anotherContainer.compare(container);
+    anotherContainer.compare(container);
     //assert(anotherContainer.get(0)->defineElement()==container.get(0)->defineElement());
     //anotherContainer.insert(anotherConsumer,0);
     //assert(anotherContainer.get(0)->getConsumerName().compare(container.get(0)->getConsumerName()) != 0);
