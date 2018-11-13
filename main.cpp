@@ -165,7 +165,7 @@ int main()
     //assert(container.get(0)->getConsumerName().compare(someConsumer.getConsumerName())==0);
     //assert(container.get(1)->getConsumerName().compare(someConsumer.getConsumerName())==0);
     //assert(container.get(2)->getConsumerName().compare(anotherConsumer.getConsumerName())==0);
-    //container.deleteRecord(2);
+    container.deleteRecord(2);
 
 
     displayData(container);

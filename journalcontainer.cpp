@@ -106,16 +106,27 @@ void JournalContainer::insert(BaseRecord &record){
 void JournalContainer:: deleteRecord(int position){       //old method "pop" was renamed (it called deletedRecord because delete is built-in function)
     assert(position >=0 and position < currentSize);
     if (position == currentSize-1){
-        delete &records[position];  //here was &
+        delete (records[position]);  //here was &
     }
     else{
-        for (int i = position; i < currentSize; i++)
-            records[i] = records[i+1];
-
-        delete &records[currentSize - 1]; //here was &
+        for (int i = position; i < currentSize-1; i++){
+            //records[i] = records[i+1];
+            if (records[i+1]->defineElement()==1){
+                JournalRecord *helper = dynamic_cast<JournalRecord*>(records[i+1]);
+                JournalRecord *newRecord = new JournalRecord(*helper);
+                records[i] = newRecord;
+            }
+            else if (records[i+1]->defineElement()==2){
+                DutyRecord *helper = dynamic_cast<DutyRecord*>(records[i+1]);
+                DutyRecord *newRecord = new DutyRecord(*helper);
+                records[i] = newRecord;
+            }
+        }
+        delete  (records[currentSize - 1]); //here was &
     }
     currentSize--;
 }
+
 BaseRecord *JournalContainer:: get(int index) const {
     assert(index >= 0 && index < currentSize);
     return records[index];
