@@ -24,7 +24,7 @@ JournalContainer:: JournalContainer(int numberOfElements, int maxVolume){
 }
 
 JournalContainer:: ~JournalContainer(){
-    for (int i = sizeOfContainer-1; i >=0; i--){
+    for (int i = currentSize-1; i >=0; i--){
         delete &records[i]; // here was &
     }
     currentSize = 0;
@@ -37,16 +37,17 @@ JournalContainer:: JournalContainer(const JournalContainer &journal){
     this->sizeOfContainer = journal.sizeOfContainer;
     this->maxVolume = journal.maxVolume;
     records = new BaseRecord*[sizeOfContainer];
-    for (int i=0; i < journal.size(); i++){
-        if (journal.get(i)->defineElement() == 1){
-            JournalRecord *helper = dynamic_cast<JournalRecord*>(journal.get(i));
-            JournalRecord record(*helper);
-            *records[i] = record;
+    for (int i=0; i < currentSize; i++){
+        BaseRecord *record = journal.get(i);
+        if (record->defineElement() == 1){
+            JournalRecord *helper = dynamic_cast<JournalRecord*>(record);
+            JournalRecord *newRecord = new JournalRecord(*helper);
+            records[i] = newRecord;
         }
-        else if(journal.get(i)->defineElement() == 2){
-            DutyRecord *helper = dynamic_cast<DutyRecord*>(journal.get(i));
-            DutyRecord record(*helper);
-            *records[i] = record;
+        else if(record->defineElement() == 2){
+            DutyRecord *helper = dynamic_cast<DutyRecord*>(record);
+            DutyRecord *newRecord = new DutyRecord(*helper);
+            records[i] = newRecord;
         }
     }
 }
@@ -124,7 +125,7 @@ void JournalContainer:: trim(){
 }
 
 void JournalContainer:: clear(){
-    for (int i = sizeOfContainer-1; i >=0 ; i--){
+    for (int i = currentSize-1; i >=0 ; i--){
         delete &records[i];     //here was &
     }
     currentSize = 0;

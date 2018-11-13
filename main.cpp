@@ -147,11 +147,11 @@ int main()
 
     JournalRecord *record = dynamic_cast<JournalRecord*>(container.get(0));
     cout << record->getConsumerName();
-    //container.writeToFile("d:/data.txt");      //write to file
+    container.writeToFile("d:/data.txt");      //write to file
 
 
     //read from file
-   //JournalContainer thirdContainer = JournalContainer();
+   JournalContainer thirdContainer = JournalContainer();
    //JournalContainer fourthContainer = JournalContainer();
   /*   thirdContainer.readFromFile("d:/data.txt");
 
@@ -170,7 +170,7 @@ int main()
     DutyRecord duterRecord(*u3, 30.0);
     displayData(container);
 
-    //JournalContainer anotherContainer = JournalContainer(container);        // copying test
+    JournalContainer anotherContainer = JournalContainer(container);        // copying test
     //anotherContainer.compare(container);
     //assert(anotherContainer.get(0)->defineElement()==container.get(0)->defineElement());
     //anotherContainer.insert(anotherConsumer,0);
