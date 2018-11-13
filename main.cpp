@@ -177,9 +177,22 @@ int main()
     //assert(anotherContainer.get(0)->getConsumerName().compare(container.get(0)->getConsumerName()) != 0);
 
     //displaying all elements
-    displayData(anotherContainer);
+    //displayData(anotherContainer);
 
-    cout<< container.get(1)->getAccessTime().tm_hour;
+    anotherContainer.insert(anotherConsumer,0);
+    anotherContainer.insert(anotherConsumer,0);
+    anotherContainer.insert(anotherConsumer,0);
+    anotherContainer.insert(anotherConsumer,0);
+    anotherContainer.insert(anotherConsumer,0);
+    anotherContainer.insert(anotherConsumer,0);
+    anotherContainer.insert(anotherConsumer,3);
+    anotherContainer.insert(anotherConsumer,4);
+    anotherContainer.insert(anotherConsumer,0);
+    anotherContainer.insert(anotherConsumer,1);
+    anotherContainer.insert(anotherConsumer,0);
+    anotherContainer.insert(anotherConsumer,8);
+    anotherContainer.insert(anotherConsumer,0);
+    anotherContainer.insert(anotherConsumer,0);
     container.clear();      // check clear function
     assert(container.size()==0);
     return 0;

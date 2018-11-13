@@ -149,10 +149,20 @@ int JournalContainer:: size() const{
 void JournalContainer:: changeSizeOfContainer(int newSize){
     auto **newContainer = new BaseRecord*[newSize];
     for (int i = 0; i < sizeOfContainer; i++){     //copy records to the new container
-        newContainer[i] = records[i];
+        if (records[i]->defineElement()==1){
+            JournalRecord *helper = dynamic_cast<JournalRecord*>(records[i]);
+            JournalRecord *record = new JournalRecord(*helper);
+            newContainer[i] = record;
+        }
+        else if (records[i]->defineElement()==2){
+            DutyRecord *helper = dynamic_cast<DutyRecord*>(records[i]);
+            DutyRecord *record = new DutyRecord(*helper);
+            newContainer[i] = record;
+        }
+        //newContainer[i] = records[i];
     }
     for (int i = 0; i < sizeOfContainer; i++){      // delete the old container
-        delete &records[i];     //here was &
+        delete (records[i]);     //here was &
     }
     delete[](records);
     sizeOfContainer = newSize;
