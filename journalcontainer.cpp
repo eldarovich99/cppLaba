@@ -58,43 +58,41 @@ JournalContainer:: JournalContainer(const JournalContainer &journal){
 
 void JournalContainer:: insert(BaseRecord &record, int position){
     if (record.defineElement()==1){
-        //auto* journalRecord = dynamic_cast<JournalRecord*>(&record);
+        auto* journalRecord = dynamic_cast<JournalRecord*>(&record);
 
-       /* assert(position>=0 and position<sizeOfContainer and
+        assert(position>=0 and position<sizeOfContainer and
                journalRecord->getImpactOnAmountOfCoffee() <= maxVolume
-               and (-1)*journalRecord->getImpactOnAmountOfCoffee()>= -maxVolume);*/
-
-        if (position > currentSize) position = currentSize;
-        if (currentSize >= sizeOfContainer)
-        {                // expand the array
-            changeSizeOfContainer(currentSize*2);
+               and (-1)*journalRecord->getImpactOnAmountOfCoffee()>= -maxVolume);}
+    if (position > currentSize) position = currentSize;
+    if (currentSize >= sizeOfContainer)
+    {                // expand the array
+        changeSizeOfContainer(currentSize*2);
+    }
+    if (position == currentSize){
+        if (record.defineElement()==1){
+            JournalRecord *helper = dynamic_cast<JournalRecord*>(&record);
+            JournalRecord *newRecord = new JournalRecord(*helper);
+            records[position] = newRecord;
         }
-        if (position == currentSize){
-            if (record.defineElement()==1){
-                JournalRecord *helper = dynamic_cast<JournalRecord*>(&record);
-                JournalRecord *newRecord = new JournalRecord(*helper);
-                records[position] = newRecord;
-            }
-            else if ((&record)->defineElement()==2){
-                DutyRecord *helper = dynamic_cast<DutyRecord*>(&record);
-                DutyRecord *newRecord = new DutyRecord(*helper);
-                records[position] = newRecord;
-            }
+        else if ((&record)->defineElement()==2){
+            DutyRecord *helper = dynamic_cast<DutyRecord*>(&record);
+            DutyRecord *newRecord = new DutyRecord(*helper);
+            records[position] = newRecord;
         }
-        else {
-            for (int i = currentSize; i > position;i--){    //move array
-                records[i] = records[i-1];
-            }
-            if (record.defineElement()==1){
-                JournalRecord *helper = dynamic_cast<JournalRecord*>(&record);
-                JournalRecord *newRecord = new JournalRecord(*helper);
-                records[position] = newRecord;
-            }
-            else if (record.defineElement()==2){
-                DutyRecord *helper = dynamic_cast<DutyRecord*>(&record);
-                DutyRecord *newRecord = new DutyRecord(*helper);
-                records[position] = newRecord;
-            }
+    }
+    else {
+        for (int i = currentSize; i > position;i--){    //move array
+            records[i] = records[i-1];
+        }
+        if (record.defineElement()==1){
+            JournalRecord *helper = dynamic_cast<JournalRecord*>(&record);
+            JournalRecord *newRecord = new JournalRecord(*helper);
+            records[position] = newRecord;
+        }
+        else if (record.defineElement()==2){
+            DutyRecord *helper = dynamic_cast<DutyRecord*>(&record);
+            DutyRecord *newRecord = new DutyRecord(*helper);
+            records[position] = newRecord;
         }
     }
     currentSize++;
@@ -104,7 +102,7 @@ void JournalContainer::insert(BaseRecord &record){
     insert(record, currentSize);
 }
 
-
+//???????????????????????????//
 void JournalContainer:: deleteRecord(int position){       //old method "pop" was renamed (it called deletedRecord because delete is built-in function)
     assert(position >=0 and position < currentSize);
     if (position == currentSize-1){

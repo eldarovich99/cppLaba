@@ -147,6 +147,8 @@ int main()
 
     JournalRecord *record = dynamic_cast<JournalRecord*>(container.get(0));
     cout << record->getConsumerName();
+    DutyRecord duterRecord(*u3, 30.0);
+    container.insert(duterRecord, 0);
     container.writeToFile("d:/data.txt");      //write to file
 
 
@@ -163,21 +165,15 @@ int main()
     //assert(container.get(0)->getConsumerName().compare(someConsumer.getConsumerName())==0);
     //assert(container.get(1)->getConsumerName().compare(someConsumer.getConsumerName())==0);
     //assert(container.get(2)->getConsumerName().compare(anotherConsumer.getConsumerName())==0);
-    container.deleteRecord(2);
-    assert(container.size()==3);    //check size after deletion
+    //container.deleteRecord(2);
 
 
-    DutyRecord duterRecord(*u3, 30.0);
     displayData(container);
 
     JournalContainer anotherContainer = JournalContainer(container);        // copying test
     anotherContainer.compare(container);
     assert(anotherContainer.get(0)->defineElement()==container.get(0)->defineElement());
     anotherContainer.insert(anotherConsumer,0);
-    //assert(anotherContainer.get(0)->getConsumerName().compare(container.get(0)->getConsumerName()) != 0);
-
-    //displaying all elements
-    //displayData(anotherContainer);
 
     anotherContainer.insert(anotherConsumer,0);
     anotherContainer.insert(anotherConsumer,0);
@@ -193,6 +189,12 @@ int main()
     anotherContainer.insert(anotherConsumer,8);
     anotherContainer.insert(anotherConsumer,0);
     anotherContainer.insert(anotherConsumer,0);
+    anotherContainer.insert(duterRecord, 3);
+    //assert(anotherContainer.get(0)->getConsumerName().compare(container.get(0)->getConsumerName()) != 0);
+
+    //displaying all elements
+    //displayData(anotherContainer);
+
     container.clear();      // check clear function
     assert(container.size()==0);
     return 0;
