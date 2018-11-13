@@ -9,7 +9,7 @@ using namespace std;
 
 //const int BOILER_VOLUME = 30;
 
-
+/*
 DutyRecord convertToDutyRecord(BaseRecord *record){
     BaseRecord *consumerHelper = record;
     DutyRecord *dutyHelper;
@@ -22,25 +22,24 @@ JournalRecord convertToJournalRecord(BaseRecord *record){
     JournalRecord *journalHelper;
     journalHelper = dynamic_cast<JournalRecord*>(consumerHelper);
     return  *journalHelper;
-}
+}*/
 
 //function for displaying all elements
 void displayData(JournalContainer &container){
     for (int i = 0; i < container.size(); i++){ // check all
         cout << "Element number #" << i << '\n';
-        BaseRecord *recordBase = container.get(i);
-        JournalRecord record = convertToJournalRecord(recordBase);
-        cout << record.getAccessTime().tm_hour << '\n';
-        cout << record.getAccessTime().tm_isdst << '\n';
-        cout << record.getAccessTime().tm_mday << '\n';
-        cout << record.getAccessTime().tm_min << '\n';
-        cout << record.getAccessTime().tm_mon << '\n';
-        cout << record.getAccessTime().tm_sec<< '\n';
-        cout << record.getAccessTime().tm_wday << '\n';
-        cout << record.getAccessTime().tm_yday << '\n';
-        cout << record.getAccessTime().tm_year << '\n';
-        if (record.defineElement()==1) {
-            auto* firstJournalRecord = dynamic_cast<JournalRecord*>(&record);
+        BaseRecord *record = container.get(i);
+        cout << record->getAccessTime().tm_hour << '\n';
+        cout << record->getAccessTime().tm_isdst << '\n';
+        cout << record->getAccessTime().tm_mday << '\n';
+        cout << record->getAccessTime().tm_min << '\n';
+        cout << record->getAccessTime().tm_mon << '\n';
+        cout << record->getAccessTime().tm_sec<< '\n';
+        cout << record->getAccessTime().tm_wday << '\n';
+        cout << record->getAccessTime().tm_yday << '\n';
+        cout << record->getAccessTime().tm_year << '\n';
+        if (record->defineElement()==1) {
+            auto* firstJournalRecord = dynamic_cast<JournalRecord*>(record);
             cout << firstJournalRecord->getConsumerAcademicDegree() << '\n';
             cout << firstJournalRecord->getConsumerName() << '\n';
             cout << firstJournalRecord->getConsumerPatronymic() << '\n';
@@ -49,7 +48,7 @@ void displayData(JournalContainer &container){
             cout << firstJournalRecord->getImpactOnAmountOfCoffee() << '\n';
         }
         else{
-            auto* firstJournalRecord = dynamic_cast<DutyRecord*>(recordBase);
+            auto* firstJournalRecord = dynamic_cast<DutyRecord*>(record);
             cout <<firstJournalRecord->getCurrentAmountOfCoffee() << '\n';
         }
         cout << '\n';
@@ -143,9 +142,11 @@ int main()
     assert(container.size()==3);    // check size
     container.insert(defaultConsumer);
     assert(container.size()==4);    // check size after inserting
+    //JournalRecord *helper = dynamic_cast<JournalRecord*>(container.get(0));
+    //JournalRecord record(*helper);
 
-
-
+    JournalRecord *record = dynamic_cast<JournalRecord*>(container.get(0));
+    cout << record->getConsumerName();
     //container.writeToFile("d:/data.txt");      //write to file
 
 
@@ -169,9 +170,9 @@ int main()
     DutyRecord duterRecord(*u3, 30.0);
     displayData(container);
 
-    JournalContainer anotherContainer = JournalContainer(container);        // copying test
-    anotherContainer.compare(container);
-    assert(anotherContainer.get(0)->defineElement()==container.get(0)->defineElement());
+    //JournalContainer anotherContainer = JournalContainer(container);        // copying test
+    //anotherContainer.compare(container);
+    //assert(anotherContainer.get(0)->defineElement()==container.get(0)->defineElement());
     //anotherContainer.insert(anotherConsumer,0);
     //assert(anotherContainer.get(0)->getConsumerName().compare(container.get(0)->getConsumerName()) != 0);
 

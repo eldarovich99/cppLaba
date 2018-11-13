@@ -13,7 +13,7 @@ public:
     JournalContainer(int numberOfElements, int maxVolume);
     ~JournalContainer();
     JournalContainer(const JournalContainer &journal);
-    void insert(BaseRecord &record, int position);
+    void insert(BaseRecord &record, int position);// здесь точно должен быть амперсанд
     void insert(BaseRecord &record);
     void deleteRecord(int position);
     BaseRecord * get(int index) const;
