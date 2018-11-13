@@ -138,7 +138,7 @@ int main()
     JournalContainer container = JournalContainer(); // tests for default constructor
     container.insert(someConsumer);
     container.insert(anotherConsumer);
-    container.insert(someConsumer,1);
+    container.insert(someConsumer,0);
     assert(container.size()==3);    // check size
     container.insert(defaultConsumer);
     assert(container.size()==4);    // check size after inserting
@@ -153,32 +153,33 @@ int main()
     //read from file
    JournalContainer thirdContainer = JournalContainer();
    //JournalContainer fourthContainer = JournalContainer();
-  /*   thirdContainer.readFromFile("d:/data.txt");
-
-    //assert(thirdContainer.compare(container));      // compare recovered container from file
-    //cout << container.size() << " " << thirdContainer.size();
+     thirdContainer.readFromFile("d:/data.txt");
+     thirdContainer.writeToFile("d:/data3.txt");
+    assert(thirdContainer.compare(container));      // compare recovered container from file
+    cout << container.size() << " " << thirdContainer.size();
     //cout << thirdContainer.get(3).getConsumerName();
 
     //compare with copy
-    assert(container.get(0)->getConsumerName().compare(someConsumer.getConsumerName())==0);
-    assert(container.get(1)->getConsumerName().compare(someConsumer.getConsumerName())==0);
-    assert(container.get(2)->getConsumerName().compare(anotherConsumer.getConsumerName())==0);
+    //assert(container.get(0)->getConsumerName().compare(someConsumer.getConsumerName())==0);
+    //assert(container.get(1)->getConsumerName().compare(someConsumer.getConsumerName())==0);
+    //assert(container.get(2)->getConsumerName().compare(anotherConsumer.getConsumerName())==0);
     container.deleteRecord(2);
     assert(container.size()==3);    //check size after deletion
-*/
+
 
     DutyRecord duterRecord(*u3, 30.0);
     displayData(container);
 
     JournalContainer anotherContainer = JournalContainer(container);        // copying test
     anotherContainer.compare(container);
-    //assert(anotherContainer.get(0)->defineElement()==container.get(0)->defineElement());
-    //anotherContainer.insert(anotherConsumer,0);
+    assert(anotherContainer.get(0)->defineElement()==container.get(0)->defineElement());
+    anotherContainer.insert(anotherConsumer,0);
     //assert(anotherContainer.get(0)->getConsumerName().compare(container.get(0)->getConsumerName()) != 0);
 
     //displaying all elements
-    //displayData(anotherContainer);
+    displayData(anotherContainer);
 
+    cout<< container.get(1)->getAccessTime().tm_hour;
     container.clear();      // check clear function
     assert(container.size()==0);
     return 0;

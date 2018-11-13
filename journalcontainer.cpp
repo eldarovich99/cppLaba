@@ -24,12 +24,12 @@ JournalContainer:: JournalContainer(int numberOfElements, int maxVolume){
 }
 
 JournalContainer:: ~JournalContainer(){
-    /*for (int i = currentSize-1; i >=0; i--){
-        delete &records[i]; // here was &
-    }*/
-    for (int i = 0; i < currentSize; i++){
-        delete &records[i]; // here was &
+    for (int i = currentSize-1; i >=0; i--){
+        delete (records[i]); // here was &
     }
+    /*for (int i = 0; i < currentSize; i++){
+        if(records[i]!=nullptr) delete &records[i]; // here was &
+    }*/
     currentSize = 0;
     sizeOfContainer=0;
     delete[](records);
@@ -128,12 +128,14 @@ void JournalContainer:: trim(){
 }
 
 void JournalContainer:: clear(){
-    /*for (int i = currentSize-1; i >=0 ; i--){
-        delete &records[i];     //here was &
-    }*/
-    for (int i = 0; i < currentSize; i++){
-        delete &records[i]; // here was &
+    BaseRecord *record = records[currentSize-1];
+    for (int i = currentSize-1; i >=0 ; i--){
+        delete (records[i]);     //here was &
     }
+    /*for (int i = 0; i < currentSize; i++){
+        BaseRecord *record = records[i];
+        if(records[i]!=nullptr)delete &records[i]; // here was &
+    }*/
     currentSize = 0;
     sizeOfContainer = 10;
     records = new BaseRecord*[sizeOfContainer];
@@ -305,14 +307,14 @@ bool JournalContainer::compare(JournalContainer &container) const
         if (firstRecord->getAccessTime().tm_hour != secondRecord->getAccessTime().tm_hour) return false;
         if (firstRecord->getAccessTime().tm_min != secondRecord->getAccessTime().tm_min) return false;
         if (firstRecord->defineElement() == 1 and secondRecord->defineElement()==1){
-            auto* firstJournalRecord = dynamic_cast<JournalRecord*>(firstRecord);
-            auto* secondJournalRecord = dynamic_cast<JournalRecord*>(secondRecord);
+            JournalRecord* firstJournalRecord = dynamic_cast<JournalRecord*>(firstRecord);
+            JournalRecord* secondJournalRecord = dynamic_cast<JournalRecord*>(secondRecord);
             //if (firstJournalRecord->getConsumerName().compare(secondJournalRecord->getConsumerName())!=0) return false;
-            if (firstJournalRecord->getConsumerName()==secondJournalRecord->getConsumerName()) return false;
-            if (firstJournalRecord->getConsumerSurname()==(secondJournalRecord->getConsumerSurname())) return false;
-            if (firstJournalRecord->getConsumerPatronymic()==(secondJournalRecord->getConsumerPatronymic())) return false;
-            if (firstJournalRecord->getConsumerAcademicDegree()==(secondJournalRecord->getConsumerAcademicDegree())) return false;
-            if (firstJournalRecord->getConsumerPosition()==(secondJournalRecord->getConsumerPosition())) return false;
+            if (firstJournalRecord->getConsumerName().compare(secondJournalRecord->getConsumerName())!=0) return false;
+            if (firstJournalRecord->getConsumerSurname().compare(secondJournalRecord->getConsumerSurname())!=0) return false;
+            if (firstJournalRecord->getConsumerPatronymic().compare(secondJournalRecord->getConsumerPatronymic())!=0) return false;
+            if (firstJournalRecord->getConsumerAcademicDegree().compare(secondJournalRecord->getConsumerAcademicDegree())!=0) return false;
+            if (firstJournalRecord->getConsumerPosition().compare(secondJournalRecord->getConsumerPosition())!=0) return false;
             if (firstJournalRecord->getImpactOnAmountOfCoffee() - secondJournalRecord->getImpactOnAmountOfCoffee() > 0.01 ||
                 firstJournalRecord->getImpactOnAmountOfCoffee() - secondJournalRecord->getImpactOnAmountOfCoffee() < -0.01) return false;
         }
